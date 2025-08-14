@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Menu, X } from "lucide-react";
 import Roberts from "./assets/Roberts.jpeg";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import SuccessPage from "./SucessPage";
 
 // Importa el nuevo componente
-
-const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth" });
-  }
-};
 
 // Componente para la tarjeta de producto, ahora recibe navigate como prop
 const ProductCard = ({
@@ -101,7 +94,15 @@ const ProductCard = ({
 // Componente principal que contiene toda la UI y la lógica
 const HomePage = () => {
   const [isAnimated, setIsAnimated] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setIsMenuOpen(false);
+  };
 
   useEffect(() => {
     setIsAnimated(true);
@@ -135,6 +136,24 @@ const HomePage = () => {
                 Levántate y Pelea
               </span>
             </div>
+             {" "}
+            <div className="flex md:hidden items-center">
+                           {" "}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              >
+                                <span className="sr-only">Open main menu</span> 
+                             {" "}
+                {isMenuOpen ? (
+                  <X className="block h-6 w-6" /> // Icono de 'X' si el menú está abierto
+                ) : (
+                  <Menu className="block h-6 w-6" /> // Icono de menú si está cerrado
+                )}
+                             {" "}
+              </button>
+                         {" "}
+            </div>
             <div className="hidden md:flex space-x-8">
               <button
                 onClick={() => scrollToSection("synopsis")}
@@ -157,6 +176,30 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <button
+                onClick={() => scrollToSection("synopsis")}
+                className="text-gray-700 hover:bg-gray-100 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
+              >
+                Sinopsis
+              </button>
+              <button
+                onClick={() => scrollToSection("author")}
+                className="text-gray-700 hover:bg-gray-100 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
+              >
+                Sobre el Autor
+              </button>
+              <button
+                onClick={() => scrollToSection("comprar")}
+                className="text-gray-700 hover:bg-gray-100 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
+              >
+                Adquirir Libro
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
       {/* Sección de Encabezado/Hero */}
       <header className="relative pt-40 pb-16 md:py-60 overflow-hidden rounded-b-lg text-white">
