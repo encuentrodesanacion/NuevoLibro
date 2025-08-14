@@ -159,7 +159,7 @@ const HomePage = () => {
         </div>
       </nav>
       {/* Sección de Encabezado/Hero */}
-      <header className="relative py-16 md:py-60 overflow-hidden rounded-b-lg text-white">
+      <header className="relative pt-32 pb-16 md:py-60 overflow-hidden rounded-b-lg text-white">
         {/* Imagen de fondo con superposición */}
         <div
           className="absolute inset-0 bg-cover bg-center"
