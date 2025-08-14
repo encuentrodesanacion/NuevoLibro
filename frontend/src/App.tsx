@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {
-  BookOpen,
-  User,
-  ShoppingCart,
-  Star,
-  Quote,
-  ChevronDown,
-  ExternalLink,
-} from "lucide-react";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 import Roberts from "./assets/Roberts.jpeg";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import SuccessPage from "./sucesspage";
+
+// Importa el nuevo componente
 
 const scrollToSection = (sectionId) => {
   const element = document.getElementById(sectionId);
@@ -18,14 +14,114 @@ const scrollToSection = (sectionId) => {
   }
 };
 
-const App = () => {
-  // Estado para controlar la animación (opcional, pero útil para react)
+// Componente para la tarjeta de producto, ahora recibe navigate como prop
+const ProductCard = ({
+  title,
+  price,
+  description,
+  features,
+  isPopular,
+  navigate,
+}) => {
+  return (
+    <div
+      className={`bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 ${
+        isPopular ? "border-2 border-orange-400" : ""
+      }`}
+    >
+      {isPopular && (
+        <div className="bg-orange-500 text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4">
+          MÁS POPULAR
+        </div>
+      )}
+      <h3 className="text-2xl font-bold mb-4">{title}</h3>
+      <div className="text-4xl font-bold mb-2">${price}</div>
+      <p className="text-blue-100 mb-6">{description}</p>
+      <ul className="space-y-2 text-left mb-8 text-blue-100">
+        {features.map((feature, index) => (
+          <li key={index}>✓ {feature}</li>
+        ))}
+      </ul>
+      <PayPalButtons
+        style={{ layout: "vertical", color: "gold", shape: "rect" }}
+        createOrder={async () => {
+          console.log(
+            `➡️ Frontend: Solicitando crear una orden para ${title}...`
+          );
+          try {
+            const response = await fetch("/api/orders", {
+              method: "post",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ price: price }),
+            });
+            if (!response.ok) {
+              throw new Error("❌ Fallo al crear la orden en el servidor.");
+            }
+            const order = await response.json();
+            console.log("✅ Frontend: Orden creada, ID recibido:", order.id);
+            return order.id;
+          } catch (error) {
+            console.error("❌ Frontend: Error en createOrder:", error);
+            throw error;
+          }
+        }}
+        onApprove={async (data) => {
+          console.log(
+            `➡️ Frontend: Aprobando pago para la orden ID: ${data.orderID}`
+          );
+          try {
+            const response = await fetch(
+              `/api/orders/${data.orderID}/capture`,
+              {
+                method: "post",
+                headers: { "Content-Type": "application/json" },
+              }
+            );
+            if (!response.ok) {
+              throw new Error("❌ Fallo al capturar el pago en el servidor.");
+            }
+            const details = await response.json();
+            console.log(
+              "✅ Frontend: Pago capturado con éxito. Detalles:",
+              details
+            );
+
+            // Redirige al usuario a la página de éxito
+            navigate("/pago-exitoso");
+          } catch (error) {
+            console.error("❌ Frontend: Error en onApprove:", error);
+            throw error;
+          }
+        }}
+      />
+    </div>
+  );
+};
+
+// Componente principal que contiene toda la UI y la lógica
+const HomePage = () => {
   const [isAnimated, setIsAnimated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Al cargar el componente, activamos la animación
     setIsAnimated(true);
   }, []);
+
+  const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
+
+  if (!paypalClientId) {
+    console.error(
+      "❌ ERROR: La variable de entorno VITE_PAYPAL_CLIENT_ID no está definida."
+    );
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-red-600 font-bold">
+          Error de configuración de PayPal. Por favor, revisa tus variables de
+          entorno.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white antialiased">
@@ -53,7 +149,7 @@ const App = () => {
                 Sobre el Autor
               </button>
               <button
-                onClick={() => scrollToSection("purchase")}
+                onClick={() => scrollToSection("comprar")}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 Adquirir Libro
@@ -63,7 +159,16 @@ const App = () => {
         </div>
       </nav>
       {/* Sección de Encabezado/Hero */}
-      <header className="relative bg-gradient-to-r from-blue-500 to-orange-200 text-white py-16 md:py-60 overflow-hidden rounded-b-lg">
+      <header className="relative py-16 md:py-60 overflow-hidden rounded-b-lg text-white">
+        {/* Imagen de fondo con superposición */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('/ruta/a/tu/imagen-de-fondo.jpg')` }}
+        >
+          {/* Capa de color semitransparente para mantener el estilo y mejorar la legibilidad */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-700/80 to-purple-800/80"></div>
+        </div>
+
         <div className="container mx-auto px-6 text-center relative z-10">
           <h1
             className={`text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4 transition-all duration-800 ease-out ${
@@ -72,7 +177,7 @@ const App = () => {
                 : "opacity-0 -translate-y-5"
             }`}
           >
-            Levantate y Pelea
+            Levántate y Pelea
           </h1>
           <p
             className={`text-xl sm:text-2xl md:text-3xl font-light mb-8 transition-all duration-800 ease-out delay-200 ${
@@ -99,13 +204,12 @@ const App = () => {
             ¡Pre-ordena tu copia ahora!
           </a>
         </div>
-        {/* Elementos de fondo decorativos (opcional) */}
+        {/* Elementos de fondo decorativos */}
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500 opacity-20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-purple-500 opacity-20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         </div>
       </header>
-
       {/* Sección Sobre el Libro */}
       <section
         id="synopsis"
@@ -117,11 +221,10 @@ const App = () => {
               Sumérgete en la historia de Roberts
             </h2>
             <p className="text-lg leading-relaxed text-gray-700 mb-4">
-              "Levantate y Pelea" es una emocionante libro de autoayuda que te
-              transportará a un universo de misterio, aventura y
-              autodescubrimiento. Sigue a [Nombre del Personaje Principal]
-              mientras desentraña secretos ancestrales y se enfrenta a desafíos
-              que pondrán a prueba su coraje y su percepción de la realidad.
+              "Levantate y Pelea" es una emocionante libro de autoayuda que ...
+              (1. Llamado emocional al lector (Inspiración y esperanza)) .
+              mpacto psicológico: Activa la esperanza, el empoderamiento y el
+              deseo de superarse.
             </p>
             <p className="text-lg leading-relaxed text-gray-700">
               Con giros inesperados y personajes inolvidables, este libro es una
@@ -130,7 +233,6 @@ const App = () => {
             </p>
           </div>
           <div className="md:w-1/2 flex justify-center">
-            {/* Placeholder para la imagen de la portada del libro */}
             <img
               src={Roberts}
               alt="Portada del libro Roberts"
@@ -139,7 +241,6 @@ const App = () => {
           </div>
         </div>
       </section>
-
       {/* Sección Sobre el Autor */}
       <section
         id="author"
@@ -152,9 +253,9 @@ const App = () => {
             </h2>
             <p className="text-lg leading-relaxed text-gray-700 mb-4">
               Roberts es un apasionado narrador con una habilidad única para
-              crear y comúnicar. Desde temprana edad, él ha estado fascinado/a
+              crear y comunicar. Desde temprana edad, él ha estado fascinado/a
               por [menciona un interés o inspiración, ej: las radios, la física
-              cuántica,etc], lo que se refleja en la profundidad y originalidad
+              cuántica, etc], lo que se refleja en la profundidad y originalidad
               de sus obras.
             </p>
             <p className="text-lg leading-relaxed text-gray-700">
@@ -164,7 +265,6 @@ const App = () => {
             </p>
           </div>
           <div className="md:w-1/2 flex justify-center">
-            {/* Placeholder para la imagen del autor */}
             <img
               src="https://placehold.co/300x300/4F46E5/FFFFFF?text=Foto+del+Autor"
               alt="Foto del autor"
@@ -173,10 +273,9 @@ const App = () => {
           </div>
         </div>
       </section>
-
       {/* Purchase Section */}
       <section
-        id="purchase"
+        id="comprar"
         className="py-20 bg-gradient-to-br from-blue-600 to-blue-800 text-white"
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -186,94 +285,39 @@ const App = () => {
             otra lección.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {/* Digital Version */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300">
-              <h3 className="text-2xl font-bold mb-4">Versión Digital</h3>
-              <div className="text-4xl font-bold mb-2">$19.99</div>
-              <p className="text-blue-100 mb-6">
-                Acceso inmediato • Formatos PDF y ePub
-              </p>
-              <ul className="space-y-2 text-left mb-8 text-blue-100">
-                <li>✓ Descarga instantánea</li>
-                <li>✓ Compatible con todos los dispositivos</li>
-                <li>✓ Búsqueda de texto integrada</li>
-                <li>✓ Notas y marcadores digitales</li>
-              </ul>
-              {/* Bloque de PayPal comentado para que no genere errores */}
-              {/*
-              <PayPalScriptProvider options={{ 'client-id': 'TU_CLIENT_ID_DE_PAYPAL' }}>
-                <PayPalButtons
-                  createOrder={(data, actions) => {
-                    return fetch("/api/orders", {
-                      method: "post",
-                      headers: { "Content-Type": "application/json" },
-                    })
-                    .then((response) => response.json())
-                    .then((order) => order.id);
-                  }}
-                  onApprove={(data, actions) => {
-                    return fetch(`/api/orders/${data.orderID}/capture`, {
-                      method: "post",
-                      headers: { "Content-Type": "application/json" },
-                    })
-                    .then((response) => response.json())
-                    .then((details) => {
-                      alert("¡Pago exitoso! Gracias por tu compra.");
-                      console.log("Detalles del pago:", details);
-                    });
-                  }}
-                />
-              </PayPalScriptProvider>
-              */}
+          <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              {/* Versión Digital /grids-cols-2 ==> Para cuadricula 2 columnas */}
+              <ProductCard
+                title="Versión Digital"
+                price="19.99"
+                description="Acceso inmediato • Formatos PDF y ePub"
+                features={[
+                  "Descarga instantánea",
+                  "Compatible con todos los dispositivos",
+                  "Búsqueda de texto integrada",
+                  "Notas y marcadores digitales",
+                ]}
+                isPopular={false}
+                navigate={navigate}
+              />
+
+              {/* Versión Física */}
+              <ProductCard
+                title="Libro Físico"
+                price="29.99"
+                description="Envío gratuito • Tapa dura premium"
+                features={[
+                  "Libro físico de alta calidad",
+                  "Tapa dura con acabado mate",
+                  "Envío gratuito mundial",
+                  "Ideal para regalar",
+                ]}
+                isPopular={true}
+                navigate={navigate}
+              />
             </div>
-
-            {/* Physical Version */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 border-2 border-orange-400">
-              <div className="bg-orange-500 text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4">
-                MÁS POPULAR
-              </div>
-
-              <h3 className="text-2xl font-bold mb-4">Libro Físico</h3>
-              <div className="text-4xl font-bold mb-2">$29.99</div>
-              <p className="text-blue-100 mb-6">
-                Envío gratuito • Tapa dura premium
-              </p>
-              <ul className="space-y-2 text-left mb-8 text-blue-100">
-                <li>✓ Libro físico de alta calidad</li>
-                <li>✓ Tapa dura con acabado mate</li>
-                <li>✓ Envío gratuito mundial</li>
-                <li>✓ Ideal para regalar</li>
-              </ul>
-              {/* Bloque de PayPal comentado para que no genere errores */}
-              {/*
-              <PayPalScriptProvider options={{ 'client-id': 'TU_CLIENT_ID_DE_PAYPAL' }}>
-                <PayPalButtons
-                  createOrder={(data, actions) => {
-                    return fetch("/api/orders", {
-                      method: "post",
-                      headers: { "Content-Type": "application/json" },
-                    })
-                    .then((response) => response.json())
-                    .then((order) => order.id);
-                  }}
-                  onApprove={(data, actions) => {
-                    return fetch(`/api/orders/${data.orderID}/capture`, {
-                      method: "post",
-                      headers: { "Content-Type": "application/json" },
-                    })
-                    .then((response) => response.json())
-                    .then((details) => {
-                      alert("¡Pago exitoso! Gracias por tu compra.");
-                      console.log("Detalles del pago:", details);
-                    });
-                  }}
-                />
-              </PayPalScriptProvider>
-              */}
-            </div>
-          </div>
-
+          </PayPalScriptProvider>
           <div className="text-center space-y-4">
             <p className="text-blue-100">
               🔒 Compra 100% segura • 💯 Garantía de satisfacción de 30 días
@@ -284,7 +328,6 @@ const App = () => {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -299,6 +342,18 @@ const App = () => {
         </div>
       </footer>
     </div>
+  );
+};
+
+// Componente principal que envuelve las rutas
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/pago-exitoso" element={<SuccessPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
