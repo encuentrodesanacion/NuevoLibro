@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import Roberts from "./assets/Roberts.jpeg";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import SuccessPage from "./sucesspage";
+import SuccessPage from "./SucessPage";
 
 // Importa el nuevo componente
 
