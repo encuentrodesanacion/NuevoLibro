@@ -308,7 +308,7 @@ const HomePage = () => {
             <div className="relative z-10">
               <img
                 src={Roberts}
-                alt="Foto del autor"
+                alt="Foto del autor" //a
                 className="rounded-full shadow-2xl mx-auto w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-blue-500"
               />
             </div>
