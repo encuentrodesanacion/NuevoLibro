@@ -1,12 +1,11 @@
+// CÓDIGO ACTUALIZADO PARA RESOLVER EL ERROR DE COMPILACIÓN
+
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { BookOpen, Menu, X } from "lucide-react";
 import Roberts from "./assets/Roberts.jpeg";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import SuccessPage from "./SucessPage";
-import { motion } from "framer-motion";
-
-// Importa el nuevo componente
 
 // Componente para la tarjeta de producto, ahora recibe navigate como prop
 const ProductCard = ({
@@ -137,23 +136,18 @@ const HomePage = () => {
                 Levántate y Pelea
               </span>
             </div>
-             {" "}
             <div className="flex md:hidden items-center">
-                           {" "}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
               >
-                                <span className="sr-only">Open main menu</span> 
-                             {" "}
+                <span className="sr-only">Open main menu</span>
                 {isMenuOpen ? (
                   <X className="block h-6 w-6" /> // Icono de 'X' si el menú está abierto
                 ) : (
                   <Menu className="block h-6 w-6" /> // Icono de menú si está cerrado
                 )}
-                             {" "}
               </button>
-                         {" "}
             </div>
             <div className="hidden md:flex space-x-8">
               <button
@@ -214,42 +208,44 @@ const HomePage = () => {
         </div>
 
         <div className="container mx-auto px-6 text-center relative z-10">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4"
+          <h1
+            className={`text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4 transition-all duration-800 ease-out ${
+              isAnimated
+                ? "opacity-100 transform-none"
+                : "opacity-0 -translate-y-5"
+            }`}
           >
             Levántate y Pelea
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl sm:text-2xl md:text-3xl font-light mb-8"
+          <p
+            className={`text-xl sm:text-2xl md:text-3xl font-light mb-8 transition-all duration-800 ease-out delay-200 ${
+              isAnimated
+                ? "opacity-100 transform-none"
+                : "opacity-0 translate-y-5"
+            }`}
           >
             Descubre un libro donde lo imposible se hace realidad.
-          </motion.p>
+          </p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg sm:text-xl font-medium mb-10"
+          <p
+            className={`text-lg sm:text-xl font-medium mb-10 transition-all duration-800 ease-out delay-400 ${
+              isAnimated
+                ? "opacity-100 transform-none"
+                : "opacity-0 translate-y-5"
+            }`}
           >
             Por Roberts Live
-          </motion.p>
+          </p>
 
-          <motion.a
+          <a
             href="#comprar"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+            className={`inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg ${
+              isAnimated ? "opacity-100 transform-none" : "opacity-0 scale-80"
+            }`}
           >
             ¡Pre-ordena tu copia ahora!
-          </motion.a>
+          </a>
         </div>
         {/* Elementos de fondo decorativos */}
         <div className="absolute inset-0 z-0">
