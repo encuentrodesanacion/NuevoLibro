@@ -308,11 +308,11 @@ const HomePage = () => {
             <div className="relative z-10">
               <img
                 src={Roberts}
-                alt="Foto del autor" //a
+                alt="Foto del autor"
                 className="rounded-full shadow-2xl mx-auto w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-blue-500"
               />
             </div>
-            <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-30 animate-pulse-slow"></div>
+            <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-30"></div>
           </div>
           <div className="md:w-1/2 text-center md:text-left">
             <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-orange-400">
