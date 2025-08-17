@@ -3,6 +3,7 @@ const path = require("path");
 require("dotenv").config();
 const paypal = require("@paypal/checkout-server-sdk");
 const { Pool } = require("pg"); // 1. Importamos Pool de pg
+const nodemailer = require("nodemailer");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,13 @@ app.use(express.json());
 const clientId = process.env.PAYPAL_CLIENT_ID;
 const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 const pgUri = process.env.PG_URI; // 2. Obtenemos la URI de PostgreSQL
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // Verificar que las credenciales y la URI existen
 if (!clientId || !clientSecret || !pgUri) {
@@ -58,12 +66,12 @@ const client = new paypal.core.PayPalHttpClient(environment);
 // Endpoint para crear una orden de pago
 app.post("/api/orders", async (req, res) => {
   console.log("➡️ Petición recibida para crear una orden de pago.");
+
+  // Recibir el precio desde el frontend
   const { price } = req.body;
 
   if (!price) {
-    return res
-      .status(400)
-      .json({ error: "El precio del producto es requerido." });
+    return res.status(400).json({ error: "Falta el precio del producto." });
   }
 
   const request = new paypal.orders.OrdersCreateRequest();
@@ -74,7 +82,7 @@ app.post("/api/orders", async (req, res) => {
       {
         amount: {
           currency_code: "USD",
-          value: price,
+          value: price, // Usar el precio recibido del frontend
         },
       },
     ],
@@ -89,7 +97,92 @@ app.post("/api/orders", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// ...código existente
 
+// Endpoint para registrar la información de envío
+app.post("/api/registro-envio", async (req, res) => {
+  console.log("➡️ Petición recibida para registrar información de envío.");
+
+  const {
+    nombre_completo,
+    numero_telefono,
+    region,
+    comuna,
+    direccion_casa,
+    correo_electronico,
+    codigo_postal,
+  } = req.body;
+
+  // Validación básica de los datos
+  if (
+    !nombre_completo ||
+    !numero_telefono ||
+    !region ||
+    !comuna ||
+    !direccion_casa ||
+    !correo_electronico
+  ) {
+    return res.status(400).json({ error: "Faltan campos obligatorios." });
+  }
+
+  try {
+    const query = `
+      INSERT INTO usuarios_envio (nombre_completo, numero_telefono, region, comuna, direccion_casa, correo_electronico, codigo_postal)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING id;
+    `;
+    const values = [
+      nombre_completo,
+      numero_telefono,
+      region,
+      comuna,
+      direccion_casa,
+      correo_electronico,
+      codigo_postal,
+    ];
+
+    const result = await pool.query(query, values);
+    const nuevoRegistroId = result.rows[0].id;
+
+    // Lógica para enviar el correo de notificación
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: correo_electronico,
+      subject: "¡Hemos recibido tu información de envío!",
+      html: `
+        <p>Hola ${nombre_completo},</p>
+        <p>¡Gracias por tu compra! Hemos recibido tu información de envío y te avisaremos en cuanto tu libro esté listo para ser enviado.</p>
+        <p>A continuación, un resumen de los datos que nos proporcionaste:</p>
+        <ul>
+          <li><strong>Dirección:</strong> ${direccion_casa}, ${comuna}, ${region}</li>
+          <li><strong>Código Postal:</strong> ${codigo_postal || "N/A"}</li>
+          <li><strong>Teléfono de contacto:</strong> ${numero_telefono}</li>
+        </ul>
+        <p>Estamos trabajando para que tu libro "Levántate y Pelea" llegue lo antes posible.</p>
+        <p>¡Saludos cordiales!</p>
+        <p>El equipo de Levántate y Pelea</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    console.log(
+      "✅ Información de envío guardada y correo de notificación enviado con éxito. ID:",
+      nuevoRegistroId
+    );
+    res.status(201).json({
+      message:
+        "Información de envío guardada y correo de notificación enviado con éxito.",
+      id: nuevoRegistroId,
+    });
+  } catch (err) {
+    console.error(
+      "❌ ERROR al guardar la información de envío o al enviar el correo:",
+      err
+    );
+    res.status(500).json({ error: "Error al procesar la solicitud." });
+  }
+});
 // Endpoint para capturar el pago y guardar en la DB
 // Endpoint para capturar el pago y guardar en la DB
 app.post("/api/orders/:orderID/capture", async (req, res) => {
