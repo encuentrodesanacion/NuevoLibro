@@ -37,7 +37,7 @@ const HomePage = () => {
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
       />
-      <HeroSection isAnimated={isAnimated} />
+      <HeroSection />
       <Synopsis />
       <Author />
       <PurchaseSection />

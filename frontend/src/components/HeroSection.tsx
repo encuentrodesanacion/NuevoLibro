@@ -1,6 +1,10 @@
-import React from "react";
+// src/components/HeroSection.tsx
 
-const HeroSection = ({ isAnimated }) => (
+import React from "react";
+import { motion } from "framer-motion";
+import crackedScreen from "../assets/pantalla.png"; // Importa tu imagen
+
+const HeroSection = () => (
   <header className="relative pt-40 pb-16 md:py-60 overflow-hidden rounded-b-lg text-white">
     {/* Imagen de fondo con superposición */}
     <div
@@ -11,36 +15,65 @@ const HeroSection = ({ isAnimated }) => (
       <div className="absolute inset-0 bg-gradient-to-r from-blue-700/80 to-purple-800/80"></div>
     </div>
 
-    <div className="container mx-auto px-6 text-center relative z-10">
-      <h1
-        className={`text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4 transition-all duration-800 ease-out ${
-          isAnimated ? "opacity-100 transform-none" : "opacity-0 -translate-y-5"
-        }`}
+    {/* Efecto de pantalla rota */}
+    <motion.div
+      initial={{ opacity: 0.1 }}
+      animate={{ opacity: [0, 0.1, 0] }}
+      transition={{ duration: 0.6, delay: 2.1 }}
+      className="absolute inset-0 bg-cover bg-center "
+      style={{ backgroundImage: `url(${crackedScreen})` }}
+    />
+
+    <div className="container mx-auto px-6 text-center relative z-30">
+      <motion.h1
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 2 }}
+        transition={{
+          duration: 0.4,
+          delay: 2,
+          type: "spring",
+          stiffness: 500,
+        }}
+        className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4"
       >
         Levántate y Pelea
-      </h1>
-      <p
-        className={`text-xl sm:text-2xl md:text-3xl font-light mb-8 transition-all duration-800 ease-out delay-200 ${
-          isAnimated ? "opacity-100 transform-none" : "opacity-0 translate-y-5"
-        }`}
+      </motion.h1>
+      <br></br>
+      <br></br>
+      <br></br>
+      <motion.p
+        initial={{ opacity: 0, y: 0, rotate: 0 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+        className="text-xl sm:text-2xl md:text-3xl font-light mb-8"
       >
         Descubre un libro donde lo imposible se hace realidad.
-      </p>
-      <p
-        className={`text-lg sm:text-xl font-medium mb-10 transition-all duration-800 ease-out delay-400 ${
-          isAnimated ? "opacity-100 transform-none" : "opacity-0 translate-y-5"
-        }`}
+      </motion.p>
+
+      <motion.p
+        initial={{ opacity: 0, y: 50, rotate: -10 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
+        className="text-lg sm:text-xl font-medium mb-10"
       >
         Por Roberts Live
-      </p>
-      <a
+      </motion.p>
+
+      <motion.a
         href="#comprar"
-        className={`inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg ${
-          isAnimated ? "opacity-100 transform-none" : "opacity-0 scale-80"
-        }`}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 2 }}
+        transition={{
+          duration: 0.4,
+          delay: 0.7,
+          type: "spring",
+          stiffness: 500,
+        }}
+        whileHover={{ scale: [1.1, 1.25, 1.1] }}
+        className="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 ease-in-out transform hover:shadow-2xl"
       >
         ¡Pre-ordena tu copia ahora!
-      </a>
+      </motion.a>
     </div>
     {/* Elementos de fondo decorativos */}
     <div className="absolute inset-0 z-0">
