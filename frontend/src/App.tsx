@@ -34,7 +34,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-white antialiased">
       <Navigation
         scrollToSection={scrollToSection}
-        isMenuOpen={isMenuOpen}
+        isMenuOpen={isMenuOpen} //aas
         setIsMenuOpen={setIsMenuOpen}
       />
       <HeroSection />
