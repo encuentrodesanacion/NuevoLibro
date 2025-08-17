@@ -23,13 +23,12 @@ const HeroSection = () => (
       className="absolute inset-0 bg-cover bg-center "
       style={{ backgroundImage: `url(${crackedScreen})` }}
     />
-
-    <div className="container mx-auto px-6 text-center relative z-30">
+    <div className="container mx-auto px-5 text-center relative z-30">
       <motion.h1
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 2 }}
+        initial={{ opacity: 0, y: 50, rotate: -45 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
         transition={{
-          duration: 0.4,
+          duration: 1,
           delay: 2,
           type: "spring",
           stiffness: 500,
@@ -38,6 +37,7 @@ const HeroSection = () => (
       >
         Levántate y Pelea
       </motion.h1>
+
       <br></br>
       <br></br>
       <br></br>
@@ -62,17 +62,17 @@ const HeroSection = () => (
       <motion.a
         href="#comprar"
         initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 2 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{
-          duration: 0.4,
-          delay: 0.7,
+          duration: 0.5,
+          delay: 1,
           type: "spring",
-          stiffness: 500,
+          stiffness: 200,
         }}
         whileHover={{ scale: [1.1, 1.25, 1.1] }}
         className="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 ease-in-out transform hover:shadow-2xl"
       >
-        ¡Pre-ordena tu copia ahora!
+        ¡Ordena tu copia ahora!
       </motion.a>
     </div>
     {/* Elementos de fondo decorativos */}
