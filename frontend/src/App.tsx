@@ -4,6 +4,7 @@ import { BookOpen, Menu, X } from "lucide-react";
 import Roberts from "./assets/Roberts.jpeg";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import SuccessPage from "./SucessPage";
+import { motion } from "framer-motion";
 
 // Importa el nuevo componente
 
@@ -208,44 +209,47 @@ const HomePage = () => {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url('/ruta/a/tu/imagen-de-fondo.jpg')` }}
         >
-          {/* Capa de color semitransparente para mantener el estilo y mejorar la legibilidad */}
+          {/* Capa de color semitransparente */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-700/80 to-purple-800/80"></div>
         </div>
 
         <div className="container mx-auto px-6 text-center relative z-10">
-          <h1
-            className={`text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4 transition-all duration-800 ease-out ${
-              isAnimated
-                ? "opacity-100 transform-none"
-                : "opacity-0 -translate-y-5"
-            }`}
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4"
           >
             Levántate y Pelea
-          </h1>
-          <p
-            className={`text-xl sm:text-2xl md:text-3xl font-light mb-8 transition-all duration-800 ease-out delay-200 ${
-              isAnimated
-                ? "opacity-100 transform-none"
-                : "opacity-0 translate-y-5"
-            }`}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-xl sm:text-2xl md:text-3xl font-light mb-8"
           >
             Descubre un libro donde lo imposible se hace realidad.
-          </p>
-          <p
-            className={`text-lg sm:text-xl font-medium mb-10 transition-all duration-800 ease-out delay-400 ${
-              isAnimated
-                ? "opacity-100 transform-none"
-                : "opacity-0 translate-y-5"
-            }`}
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-lg sm:text-xl font-medium mb-10"
           >
             Por Roberts Live
-          </p>
-          <a
+          </motion.p>
+
+          <motion.a
             href="#comprar"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
             className="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
           >
             ¡Pre-ordena tu copia ahora!
-          </a>
+          </motion.a>
         </div>
         {/* Elementos de fondo decorativos */}
         <div className="absolute inset-0 z-0">
@@ -253,66 +257,80 @@ const HomePage = () => {
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-purple-500 opacity-20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         </div>
       </header>
-      {/* Sección Sobre el Libro */}
       <section
         id="synopsis"
-        className="py-16 md:py-20 bg-white rounded-lg mx-4 md:mx-auto mt-8 shadow-lg"
+        className="py-20 bg-gradient-to-r from-gray-50 to-white overflow-hidden"
       >
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-10">
-          <div className="md:w-1/2 text-center md:text-left">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-gray-800">
-              Sumérgete en la historia de Roberts
-            </h2>
-            <p className="text-lg leading-relaxed text-gray-700 mb-4">
-              "Levantate y Pelea" es una emocionante libro de autoayuda que ...
-              (1. Llamado emocional al lector (Inspiración y esperanza)) .
-              mpacto psicológico: Activa la esperanza, el empoderamiento y el
-              deseo de superarse.
+        <div className="container mx-auto px-6 max-w-4xl text-center">
+          <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-gray-900 leading-tight">
+            UN DÍA DECIDÍ LEVANTARME
+          </h2>
+          <div className="space-y-6 text-lg text-gray-700">
+            <p>
+              Recuperé la fe, me alejé de lo tóxico, de personas y situaciones
+              que solo me hacían daño. Comprendí que cuando uno dice{" "}
+              <span className="font-bold">"todo suma"</span>, es verdad: suma lo
+              bueno... pero también lo malo, porque de ambas cosas aprendemos.
             </p>
-            <p className="text-lg leading-relaxed text-gray-700">
-              Con giros inesperados y personajes inolvidables, este libro es una
-              lectura obligada para los amantes de [Género del Libro, ej: la
-              ciencia ficción, el thriller psicológico, la fantasía épica].
+            <p>
+              Hoy, con 60 años, puedo decir que he vivido intensamente y que la
+              mejor etapa de mi vida estaba aún por llegar. Por eso, este es mi
+              mensaje para ti:{" "}
+              <span className="font-bold">levántate, valórate</span> y sigue
+              caminando con esperanza. El milagro que esperas puede estar más
+              cerca de lo que imaginas.
             </p>
-          </div>
-          <div className="md:w-1/2 flex justify-center">
-            <img
-              src={Roberts}
-              alt="Portada del libro Roberts"
-              className="rounded-lg shadow-lg max-w-full h-auto"
-            />
+            <p>
+              El éxito es voluntad, y tú tienes un potencial enorme. No te dejes
+              humillar, no permitas que nadie apague tu luz. Eres increíble.
+              Mantente fiel a tus principios, sigue intentándolo y recuerda que
+              cada paso cuenta.
+            </p>
+            <p>
+              En este libro,{" "}
+              <span className="font-bold">"Levántate y pelea"</span>, comparto
+              mi historia, mis luchas y las lecciones que me permitieron
+              recuperar mi fuerza. Quiero inspirarte a creer en ti mismo y a
+              entender que, sin importar cuántas veces caigas, siempre puedes
+              volver a levantarte.
+            </p>
           </div>
         </div>
       </section>
+
       {/* Sección Sobre el Autor */}
       <section
         id="author"
-        className="py-16 md:py-20 bg-gray-100 rounded-lg mx-4 md:mx-auto mt-8 shadow-lg"
+        className="py-20 bg-gray-900 text-white overflow-hidden"
       >
-        <div className="container mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-10">
-          <div className="md:w-1/2 text-center md:text-left">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-gray-800">
-              Conoce a Roberts
-            </h2>
-            <p className="text-lg leading-relaxed text-gray-700 mb-4">
-              Roberts es un apasionado narrador con una habilidad única para
-              crear y comunicar. Desde temprana edad, él ha estado fascinado/a
-              por [menciona un interés o inspiración, ej: las radios, la física
-              cuántica, etc], lo que se refleja en la profundidad y originalidad
-              de sus obras.
-            </p>
-            <p className="text-lg leading-relaxed text-gray-700">
-              "Levántate y Pelea" es su primer libro, y promete consolidar su
-              lugar como una voz fresca y influenciadora en la literatura de
-              autoayuda.
-            </p>
+        <div className="container mx-auto px-6 max-w-5xl flex flex-col md:flex-row-reverse items-center gap-12">
+          <div className="md:w-1/2 relative p-4">
+            <div className="relative z-10">
+              <img
+                src={Roberts}
+                alt="Foto del autor"
+                className="rounded-full shadow-2xl mx-auto w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-blue-500"
+              />
+            </div>
+            <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-30 animate-pulse-slow"></div>
           </div>
-          <div className="md:w-1/2 flex justify-center">
-            <img
-              src="https://placehold.co/300x300/4F46E5/FFFFFF?text=Foto+del+Autor"
-              alt="Foto del autor"
-              className="rounded-full shadow-lg max-w-full h-auto object-cover w-64 h-64"
-            />
+          <div className="md:w-1/2 text-center md:text-left">
+            <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-orange-400">
+              PROTAGONISTA DE TU HISTORIAS
+            </h2>
+            <p className="text-xl leading-relaxed text-gray-300 mb-6">
+              Creo que ninguna biografía es realmente relevante: lo único
+              verdaderamente valioso en esta vida es el aquí y el ahora.
+            </p>
+            <p className="text-lg leading-relaxed text-gray-400">
+              Podría contarte que me tomó 40 años atreverme a hablar en público,
+              pero bastó un solo día para despertar la conciencia de lo
+              importante que es comunicar y ser el protagonista de tu propia
+              historia...esa historia que comienza hoy.{" "}
+              <span className="font-bold text-orange-400">
+                ¡Vamos, que se puede!
+              </span>
+            </p>
           </div>
         </div>
       </section>
