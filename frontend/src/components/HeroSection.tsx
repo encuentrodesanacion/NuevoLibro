@@ -25,8 +25,8 @@ const HeroSection = () => (
     />
     <div className="container mx-auto px-5 text-center relative z-30">
       <motion.h1
-        initial={{ opacity: 0, y: 50, rotate: -45 }}
-        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        initial={{ opacity: 0, y: 40, rotate: 0 }}
+        animate={{ opacity: 0, y: 0, rotate: 400 }}
         transition={{
           duration: 1,
           delay: 2,

@@ -62,7 +62,16 @@ const PurchaseSection = () => {
         throw error;
       }
     };
+    const handleCancel = (data) => {
+      console.log("❌ Pago cancelado por el usuario. Detalles:", data);
+      navigate("/pago-fallido");
+    };
 
+    // Nuevo: función para manejar errores de pago
+    const handleError = (err) => {
+      console.error("❌ Ocurrió un error en el pago. Detalles:", err);
+      navigate("/pago-fallido");
+    };
     return (
       <div
         className={`relative bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 ${
@@ -95,6 +104,8 @@ const PurchaseSection = () => {
               style={{ layout: "vertical", color: "gold", shape: "rect" }}
               createOrder={handlePurchase}
               onApprove={handleApprove}
+              onCancel={handleCancel}
+              onError={handleError}
             />
             {reserveInfo && (
               <p className="mt-4 text-center text-white font-bold text-lg leading-tight">
